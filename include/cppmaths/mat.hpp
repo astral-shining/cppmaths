@@ -1,6 +1,9 @@
 #pragma once
 #include <cpputils/types.hpp>
 
+extern "C" double cos(double);
+extern "C" double sin(double);
+
 template<u32 rows, u32 columns, typename T = float>
 struct Mat {
     T data[rows][columns];
@@ -24,9 +27,7 @@ struct Mat {
 
     Mat& operator=(T value) {
         for (u32 i = 0; i < rows; i++) {
-            for (u32 j = 0; j < columns; j++) {
-                data[i][j] = value;
-            }
+            data[i][i] = value;
         }
         return *this;
     }
@@ -50,6 +51,14 @@ struct Mat {
         auto mat = (*this)*other;
         (*this) = mat;
         return *this;
+    }
+
+    void rotate(float deg) requires (rows == 3 && columns == 3) {
+        auto c = cos(deg);
+        auto s = sin(deg);
+
+        data[0][0] = c; data[0][1] = -s; 
+        data[1][0] = s; data[1][1] = c; 
     }
 };
 
